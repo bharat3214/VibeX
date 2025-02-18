@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anonymous Chat Hub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #000;
+      position: relative;
+      overflow-x: hidden;
+      color: #fff;
+    }
+    footer {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 1rem;
+      text-align: center;
+      color: white;
+      
+    }
+
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        linear-gradient(45deg, transparent 48%, #0ff1 49%, #0ff1 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, #0ff1 49%, #0ff1 51%, transparent 52%);
+      background-size: 60px 60px;
+      animation: gridMove 20s linear infinite;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    @keyframes gridMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 60px 60px; }
+    }
+
+    .navbar {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+      position: fixed;
+      width: 100%;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      color: #0ff;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-link {
+      color: #0ff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      border: 1px solid transparent;
+    }
+
+    .nav-link:hover {
+      border-color: rgba(0, 255, 255, 0.3);
+      background: rgba(0, 255, 255, 0.1);
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+
+    .main-content {
+      padding: 8rem 2rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chat-rooms {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .room-card {
+      background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 1px solid rgba(0, 255, 255, 0.1);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .room-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(0, 255, 255, 0.1),
+        transparent
+      );
+      transform: rotate(45deg);
+      transition: 0.5s;
+      opacity: 0;
+    }
+
+    .room-card:hover::before {
+      opacity: 1;
+      transform: translateX(100%) rotate(45deg);
+    }
+
+    .room-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 25px rgba(0, 255, 255, 0.2);
+    }
+
+    .room-title {
+      color: #0ff;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .room-title svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    .room-description {
+      color: #7af7f7;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .room-stats {
+      display: flex;
+      justify-content: space-between;
+      color: rgba(0, 255, 255, 0.6);
+      font-size: 0.8rem;
+    }
+
+    .join-btn {
+      display: block;
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 1rem;
+      background: linear-gradient(45deg, #0ff, #00ccff);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .join-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+    }
+
+    .welcome-section {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .welcome-title {
+      font-size: 2.5rem;
+      color: #0ff;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    }
+
+    .welcome-subtitle {
+      color: #7af7f7;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(0, 255, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0); }
+    }
+
+    .online-pulse {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #0ff;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      animation: pulse 2s infinite;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">VibeX</div>
+    <div class="nav-links">
+      <a href="#" class="nav-link">Explore</a>
+      {% if request.user.is_authenticated %}
+           
+      <a href="/logout/" class="nav-link"type="submit">Logout</a>
+         
+      
+      {% else %}
+         <a href="/login/"class="nav-link" type="submit">Login</a>
+      {% endif %}
+      </div>
+
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <section class="welcome-section">
+      <h1 class="welcome-title">Find Your Vibe, Connect Anonymously</h1>
+      <p class="welcome-subtitle">Let your emotions lead the way—connect with others who share your vibe, all while staying anonymous.</p>
+    </section>
+
+    <div class="chat-rooms">
+      <!-- Tech Room -->
+      <div class="room-card">
+        <h3 class="room-title">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          Tech Talk
+        </h3>
+        <p class="room-description">Discuss the latest in technology, programming, and digital innovations.</p>
+        <div class="room-stats">
+          <span><span class="online-pulse"></span>125 online</span>
+          <span>Active</span>
+        </div>
+        <a href="#" class="join-btn">Join Room</a>
+      </div>
+
+      <!-- Gaming Room -->
+      <div class="room-card">
+        <h3 class="room-title">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+          </svg>
+          Gaming Zone
+        </h3>
+        <p class="room-description">Connect with fellow gamers, share strategies, and discuss your favorite games.</p>
+        <div class="room-stats">
+          <span><span class="online-pulse"></span>238 online</span>
+          <span>Active</span>
+        </div>
+        <a href="#" class="join-btn">Join Room</a>
+      </div>
+
+      <!-- Creative Room -->
+      <div class="room-card">
+        <h3 class="room-title">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Creative Corner
+        </h3>
+        <p class="room-description">Share your art, music, writing, and creative projects with fellow artists.</p>
+        <div class="room-stats">
+          <span><span class="online-pulse"></span>92 online</span>
+          <span>Active</span>
+        </div>
+        <a href="#" class="join-btn">Join Room</a>
+      </div>
+
+      <!-- Science Room -->
+      <div class="room-card">
+        <h3 class="room-title">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          </svg>
+          Science Lab
+        </h3>
+        <p class="room-description">Explore scientific discoveries, theories, and engage in intellectual discussions.</p>
+        <div class="room-stats">
+          <span><span class="online-pulse"></span>156 online</span>
+          <span>Active</span>
+        </div>
+        <a href="#" class="join-btn">Join Room</a>
+      </div>
+    </div>
+  </main>
+  <br>
+  <footer>
+    <p>&copy; 2023 Your Company. All rights reserved.</p>
+  </footer>
+</body>
+</html>
