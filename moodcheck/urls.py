@@ -29,5 +29,6 @@ urlpatterns = [
     path("register/",register_page,name="register_page"),
     path("chat/",chat,name="chat"),
     path('logout/',logout_page,name="logout_page"),
+   
 
 ]

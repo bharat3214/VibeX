@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 # Create your views here.
 
 def login_page(request):
@@ -47,7 +48,7 @@ def register_page(request):
         user = User.objects.filter(username=username)
         if user.exists():
             messages.error(request,"Username already taken!")
-            return redirect(request,'/register')
+            return redirect('/register')
         user = User.objects.create(
             first_name=first_name,
             last_name=last_name,
