@@ -1,17 +1,15 @@
 # Mood Checker 🤖🎭
 
-Mood Checker is an AI-powered chatbot that detects users' moods based on their responses and suggests relevant groups for connection. Built using Django, FastAPI, and AI-based facial emotion recognition.
+Mood Checker is an AI-powered chatbot that detects users' moods based on their responses and suggests relevant groups for connection. Built using Django and AI-based Mood recognition.
 
 ## Features  
 - 🧠 AI-powered mood detection  
 - 💬 Anonymous chat matching  
-- 📷 Facial emotion recognition (OpenCV & DeepFace)  
-- ⚡ Real-time messaging with WebSockets  
+ 
 
 ## Tech Stack  
-- **Backend:** Django, FastAPI  
-- **Frontend:** HTML, CSS, JavaScript  
-- **AI Models:** DeepFace, OpenCV  
+- **Backend:** Django  
+- **Frontend:** HTML, CSS, JavaScript   
 - **Database:** SQLite  
 
 ## Installation  
